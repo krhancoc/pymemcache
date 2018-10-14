@@ -1,0 +1,68 @@
+Total time: 0.037081 s
+File: /home/krhancoc/workspace/fcache/cache.py
+Function: fetch at line 40
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    40                                               @profile
+    41                                               def fetch(self, key):
+    42      4008       3514.0      0.9      9.5          if key in self._cache:
+    43      2003       2248.0      1.1      6.1              val = self._cache.pop(key)
+    44      2003      26758.0     13.4     72.2              self.add(key, val)
+    45      2003       1361.0      0.7      3.7              self.hits += 1
+    46      2003       1071.0      0.5      2.9              return self._cache[key]
+    47                                                   else:
+    48      2005       1235.0      0.6      3.3              self.misses += 1
+    49      2005        894.0      0.4      2.4              return None
+
+Total time: 0.004757 s
+File: /home/krhancoc/workspace/fcache/cache.py
+Function: pop at line 51
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    51                                               @profile
+    52                                               def pop(self):
+    53      1571        850.0      0.5     17.9          item = None
+    54      1571       1014.0      0.6     21.3          if len(self._cache) > 0:
+    55      1571       2163.0      1.4     45.5              item = self._cache.popitem(last=False)
+    56      1571        730.0      0.5     15.3          return item
+
+Total time: 0.039226 s
+File: /home/krhancoc/workspace/fcache/cache.py
+Function: add at line 58
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    58                                               @profile
+    59                                               def add(self, key, value):
+    60      4021       7363.0      1.8     18.8          if self._check_filled():
+    61      1571      11630.0      7.4     29.6              self.pop()
+    62      4021       2925.0      0.7      7.5          self._cache[key] = value
+    63                                                   # AS WE KNOW MAX_SIZE NOW AND LETS MAINTAIN IT
+    64      4021       7598.0      1.9     19.4          if (len(self) > self._size):
+    65        13         11.0      0.8      0.0              self.resizes += 1
+    66        13         13.0      1.0      0.0              self._max_size = len(self._cache) - 2
+    67        13         15.0      1.2      0.0              new_cache = collections.OrderedDict()
+    68      5785       3066.0      0.5      7.8              for k, val in self._cache.items():
+    69      5772       3126.0      0.5      8.0                  if k != key:
+    70      5759       3387.0      0.6      8.6                      new_cache[k] = val
+    71        13         62.0      4.8      0.2              self._cache = new_cache
+    72        13         30.0      2.3      0.1              self.add(key, value)
+
+Total time: 0.118083 s
+File: /home/krhancoc/workspace/fcache/cache.py
+Function: __call__ at line 105
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   105                                                   @profile
+   106                                                   def __call__(self, *args):
+   107      4008      15234.0      3.8     12.9              value = pickle.dumps(args)
+   108      4008      54192.0     13.5     45.9              response = self.cache.fetch(value)
+   109      4008       1660.0      0.4      1.4              if response is None:
+   110      2005       5621.0      2.8      4.8                  response = self.func(*args)
+   111      2005      39819.0     19.9     33.7                  self.cache.add(value, response)
+   112                                           
+   113      4008       1557.0      0.4      1.3              return response
+

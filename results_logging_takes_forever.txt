@@ -1,0 +1,35 @@
+Total time: 0.066209 s
+File: /home/krhancoc/workspace/fcache/cache.py
+Function: fetch at line 42
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    42                                               @profile
+    43                                               def fetch(self, key):
+    44      4008       4015.0      1.0      6.1          if key in self._cache:
+    45      2003      14264.0      7.1     21.5              logging.debug("Key %s found in cache" % str(key))
+    46      2003       2797.0      1.4      4.2              val = self._cache.pop(key)
+    47      2003      23690.0     11.8     35.8              self.add(key, val)
+    48      2003       1596.0      0.8      2.4              self.hits += 1
+    49      2003       1082.0      0.5      1.6              return self._cache[key]
+    50                                                   else:
+    51      2005       1394.0      0.7      2.1              self.misses += 1
+    52      2005      16285.0      8.1     24.6              logging.debug("Key %s not found in cache" % str(key))
+    53      2005       1086.0      0.5      1.6              return None
+
+Total time: 0.153334 s
+File: /home/krhancoc/workspace/fcache/cache.py
+Function: __call__ at line 110
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   110                                                   @profile
+   111                                                   def __call__(self, *args):
+   112      4008      15474.0      3.9     10.1              value = pickle.dumps(args)
+   113      4008      87347.0     21.8     57.0              response = self.cache.fetch(value)
+   114      4008       1683.0      0.4      1.1              if response is None:
+   115      2005       4998.0      2.5      3.3                  response = self.func(*args)
+   116      2005      42242.0     21.1     27.5                  self.cache.add(value, response)
+   117                                           
+   118      4008       1590.0      0.4      1.0              return response
+
