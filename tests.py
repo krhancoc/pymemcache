@@ -17,16 +17,17 @@ class TestLRU(unittest.TestCase):
             self.lru.add(x, y)
         self.assertTrue(self.lru.bsize() < 1024)
 
-    def check_eviction(self):
-        assert False
+    def test_check_eviction(self):
         for x in range(5):
             y = random.randint(0, 101)
             self.lru.add(x, y)
         key, val = self.lru.evict()
         self.assertTrue(key == 0)
         self.assertTrue(self.lru.fetch(1) is not None)
+        self.assertTrue(self.lru.fetch(2) is not None)
+        self.assertTrue(self.lru.fetch(4) is not None)
         key, val = self.lru.evict()
-        self.assertTrue(key == 2)
+        self.assertTrue(key == 3)
 
 class TestClock(unittest.TestCase):
     def setUp(self):
@@ -83,3 +84,4 @@ class TestFIFO(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+

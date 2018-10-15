@@ -48,13 +48,12 @@ class Clock(Cache):
         self._cache = new_cache
 
     def fetch(self, key):
-        if key in self._cache:
-            self._hits += 1
-            self._cache[key][1] = 1
-            return self._cache[key][0]
-        else:
-            self._misses += 1
-            return None
+        val = super().fetch(key)
+        if val is not None:
+            val[1] = 1
+            return val[0]
+
+        return None
 
 
     def bsize(self):

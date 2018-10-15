@@ -60,6 +60,10 @@ def cache_test(t):
     def object_check(y):
         return y
 
+    @memcache(5 * KB, t)
+    def local_with_some_random(y):
+        return y
+
 
     dictionary = {}
     for x in range(100000):
@@ -67,8 +71,20 @@ def cache_test(t):
 
     fib2(1000)
     fib2(2000)
-    for x in range(10000):
-        fib(500)
+    for x in range(100, 100000, 1000):
+        for _ in range(100):
+
+            #localized
+            for t in range(x - 10, x + 10):
+                t = int(t)
+                local_with_some_random(t)
+
+            #random
+            for _ in range(3):
+                r = random.randint(1000000, 2000000)
+                local_with_some_random(r)
+
+
 
     for x in range(100000):
         k = random.randint(0, 11)
@@ -83,6 +99,8 @@ def cache_test(t):
     string_check("hello")
     object_check(dictionary)
     object_check(dictionary)
+
+
 
 gcm = GlobalCacheManager
 t = Thread(target = gcm.display, args = (True,))
