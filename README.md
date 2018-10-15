@@ -25,6 +25,8 @@ python tests.py
 python demo.py
 ```
 
+Pressing 'q' exists the dynamic view of the demo
+
 ## Usage
 
 
