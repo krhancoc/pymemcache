@@ -92,5 +92,6 @@ for x in range(3000):
     fib2(x)
 cache_test(CacheI.LRU)
 cache_test(CacheI.CLOCK)
+cache_test(CacheI.FIFO)
 t.join()
 gcm.display()

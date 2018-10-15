@@ -10,6 +10,7 @@ class CacheI(Enum):
     LRU = 1
     CLOCK = 2
     ARC = 3
+    FIFO = 4
 
 
 class CacheManager:
@@ -77,9 +78,22 @@ class Cache(ABC):
     def bsize(self):
         raise NotImplementedError("missing implementation")
 
-    @abstractmethod
-    def fetch(self):
-        raise NotImplementedError("missing implementation")
+    def fetch(self, key):
+        """ Fetches a value from the cache, returns None when key is not there"
+
+        Args:
+            key (any): key of value in cache
+
+        Returns:
+            returns the value at key in cache, or None if the key does
+            not exist.
+        """
+        if key in self._cache:
+            self._hits += 1
+            return self._cache[key]
+        else:
+            self._misses += 1
+            return None
 
     def info(self):
         hit_p = 0

@@ -33,33 +33,10 @@ class LRU(Cache):
         self._max_size = -1
         self._resizes = 0
 
-    def fetch(self, key):
-        """ Fetches a value from the cache, returns None when key is not there"
-
-        Args:
-            key (any): key of value in cache
-
-        Returns:
-            returns the value at key in cache, or None if the key does
-            not exist.
-        """
-        if key in self._cache:
-            val = self._cache.pop(key)
-            self.add(key, val)
-            self._hits += 1
-            return self._cache[key]
-        else:
-            self._misses += 1
-            return None
-
-
     # @profile
     def evict(self):
         """ Pops the least recently used element from the cache"""
-        item = None
-        if len(self._cache) > 0:
-            item = self._cache.popitem(last=False)
-        return item
+        return self._cache.popitem(last=False)
 
     # @profile
     def add(self, key, value):
@@ -80,6 +57,14 @@ class LRU(Cache):
         if (self.bsize() > self._size):
             self.resize(key)
             self.add(key, value)
+
+    def fetch(self, key):
+        result = super().fetch(key)
+        if result is not None:
+            val = self._cache.pop(key)
+            self.add(key, val)
+
+        return result
 
     def resize(self, exclude):
         self._resizes += 1
@@ -111,7 +96,6 @@ class LRU(Cache):
             hit_p = (self._hits / denom) * 100
             resize_p = (self._resizes / self._misses) * 100
         return [self._style, len(self), self.bsize(), hit_p, resize_p]
-
 
     def __str__(self):
         hit_p = 0

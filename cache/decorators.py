@@ -4,6 +4,7 @@ import pickle
 from .cache import CacheI, GlobalCacheManager
 from .lru import LRU
 from .clock import Clock
+from .fifo import FIFO
 
 
 def memcache(size, style=CacheI.LRU):
@@ -40,6 +41,8 @@ def memcache(size, style=CacheI.LRU):
                 self.cache = LRU(size)
             elif val == CacheI.CLOCK:
                 self.cache = Clock(size)
+            elif val == CacheI.FIFO:
+                self.cache = FIFO(size)
 
         def info(self):
             info = []

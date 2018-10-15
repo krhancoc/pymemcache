@@ -20,12 +20,11 @@ class Clock(Cache):
         while (True):
             key, val = items[self._clock_head]
             if val[1] == 0:
-                self._cache.pop(key)
-                break
+                return (key, self._cache.pop(key)[0])
             else:
                 val[1] = 0
             self._clock_head += 1
-            if self._max_size == 0:
+            if self._max_size != 0:
                 self._clock_head = self._clock_head % self._max_size
             else:
                 self._clock_head = self._clock_head % len(self._cache)
@@ -51,6 +50,7 @@ class Clock(Cache):
     def fetch(self, key):
         if key in self._cache:
             self._hits += 1
+            self._cache[key][1] = 1
             return self._cache[key][0]
         else:
             self._misses += 1
