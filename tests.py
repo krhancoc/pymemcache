@@ -1,12 +1,12 @@
 import unittest
 import random
 
-from cache import LRU, Clock, FIFO
+from cache import LRU, Clock, FIFO, ARC
 
 
 class TestLRU(unittest.TestCase):
     def setUp(self):
-        self.lru = LRU(1024)
+        self.lru = LRU(50)
 
     def tearDown(self):
         del self.lru
@@ -15,7 +15,7 @@ class TestLRU(unittest.TestCase):
         for x in range(100000):
             y = random.randint(0, 101)
             self.lru.add(x, y)
-        self.assertTrue(self.lru.bsize() < 1024)
+        self.assertTrue(len(self.lru) <= 50 )
 
     def test_check_eviction(self):
         for x in range(5):
@@ -31,7 +31,7 @@ class TestLRU(unittest.TestCase):
 
 class TestClock(unittest.TestCase):
     def setUp(self):
-        self.clock = Clock(1024)
+        self.clock = Clock(50)
 
     def tearDown(self):
         del self.clock
@@ -40,7 +40,7 @@ class TestClock(unittest.TestCase):
         for x in range(100000):
             y = random.randint(0, 101)
             self.clock.add(x, y)
-        self.assertTrue(self.clock.bsize() < 1024)
+        self.assertTrue(len(self.clock) <= 50)
 
     def test_check_eviction(self):
         for x in range(5):
@@ -55,7 +55,7 @@ class TestClock(unittest.TestCase):
 
 class TestFIFO(unittest.TestCase):
     def setUp(self):
-        self.fifo = FIFO(1024)
+        self.fifo = FIFO(50)
 
     def tearDown(self):
         del self.fifo
@@ -64,7 +64,7 @@ class TestFIFO(unittest.TestCase):
         for x in range(100000):
             y = random.randint(0, 101)
             self.fifo.add(x, y)
-        self.assertTrue(self.fifo.bsize() < 1024)
+        self.assertTrue(len(self.fifo) <= 50)
 
     def test_check_eviction(self):
         for x in range(5):
@@ -79,8 +79,45 @@ class TestFIFO(unittest.TestCase):
         key, val = self.fifo.evict()
         self.assertTrue(key == 2)
 
-    def false(self):
-        assert False
+class TestARC(unittest.TestCase):
+    def setUp(self):
+        self.arc = ARC(60)
+
+    def tearDown(self):
+        del self.arc
+
+    def test_max_size(self):
+        for x in range(100000):
+            y = random.randint(0, 101)
+            self.arc.add(x, y)
+        self.assertTrue(len(self.arc) <= 60)
+
+    def test_check_eviction(self):
+        for x in range(60):
+            y = random.randint(0, 101)
+            self.arc.add(x, y)
+        for x in range(30):
+            val = self.arc.fetch(x)
+        for x in range(61, 92):
+            y = random.randint(0, 101)
+            self.arc.add(x, y)
+        self.arc.fetch(32)
+        self.arc.fetch(33)
+        self.arc.print()
+        print(len(self.arc))
+        #  self.assertTrue(val != None)
+        #  self.assertTrue(len(self.arc) == 30)
+        #  for x in range(10, 20):
+            #  val = self.arc.fetch(x)
+        #  self.assertTrue(len(self.arc) == 30)
+        #  for x in range(50, 100):
+            #  y = random.randint(0, 101)
+            #  self.arc.add(x, y)
+        #  self.arc.print()
+        #  print(len(self.arc))
+        #  for x in range(20, 60):
+            #  self.arc.fetch(x)
+
 
 if __name__ == '__main__':
     unittest.main()

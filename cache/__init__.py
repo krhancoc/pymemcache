@@ -3,4 +3,5 @@ from .decorators import memcache
 from .lru import LRU
 from .clock import Clock
 from .fifo import FIFO
+from .arc import ARC
 

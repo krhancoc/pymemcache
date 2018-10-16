@@ -5,11 +5,12 @@ from .cache import CacheI, GlobalCacheManager
 from .lru import LRU
 from .clock import Clock
 from .fifo import FIFO
+from .arc import ARC
 
 
 def memcache(size, style=CacheI.LRU):
     """Decorator caching object for functions"""
-    MIN_SIZE = 2048
+    MIN_SIZE = 10
 
     assert size >= MIN_SIZE
 
@@ -43,6 +44,8 @@ def memcache(size, style=CacheI.LRU):
                 self.cache = Clock(size)
             elif val == CacheI.FIFO:
                 self.cache = FIFO(size)
+            elif val == CacheI.ARC:
+                self.cache = ARC(size)
 
         def info(self):
             info = []

@@ -9,8 +9,8 @@ from texttable import Texttable
 class CacheI(Enum):
     LRU = 1
     CLOCK = 2
-    ARC = 3
-    FIFO = 4
+    FIFO = 3
+    ARC = 4
 
 
 class CacheManager:
@@ -28,11 +28,11 @@ class CacheManager:
         """
         def info_str():
             table = Texttable()
-            table.set_cols_align(["l", "l", "r", "r", "l", "l"])
+            table.set_cols_align(["l", "l", "r", "r", "l"])
             rows = [c.info() for c in self._registered]
             final = [
                 ["Location", "Cache Type", "Entries", "Size (bytes)",
-                    "Hit (%)", "Adds causing resize (%)"]] + rows
+                    "Hit (%)"]] + rows
             table.add_rows(final)
             return table.draw()
 
@@ -59,9 +59,8 @@ GlobalCacheManager = CacheManager()
 class Cache(ABC):
 
     def __init__(self, size, style):
-        self._size = size
         self._style = style
-        self._max_size = 0
+        self.__max_size = size
         self._cache = None
         self._hits = 0
         self._misses = 0
@@ -97,12 +96,10 @@ class Cache(ABC):
 
     def info(self):
         hit_p = 0
-        resize_p = 0
         denom = (self._hits + self._misses)
         if denom > 0:
             hit_p = (self._hits / denom) * 100
-            resize_p = (self._resizes / self._misses) * 100
-        return [self._style, len(self), self.bsize(), hit_p, resize_p]
+        return [self._style, len(self), self.bsize(), hit_p]
 
     def print(self):
         """ Prints all cache entries in the cache"""
@@ -113,8 +110,28 @@ class Cache(ABC):
 
         return len(self._cache)
 
-    def _check_filled(self):
-        if self._max_size > 0:
-            return self._max_size <= len(self)
+    @property
+    def _max_size(self):
 
-        return self.bsize() >= self._size
+        return self.__max_size
+
+    @_max_size.setter
+    def _max_size(self, val):
+        
+        assert val >= 1, "orig %d - new %d" % (self.__max_size, val)
+
+        self.__max_size = val
+
+    def __contains__(self, item):
+
+        return item in self._cache
+
+    def delete(self, key):
+
+        del self._cache[key]
+
+    def _check_filled(self):
+
+        return len(self) >= self._max_size
+
+
