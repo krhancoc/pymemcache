@@ -4,7 +4,8 @@ Example of decorator with the following implementations:
 
 * FIFO (First In First Out)
 * LRU (Least Recently Used)
-* Clock (Approximation of LRU)
+* ARC (Adaptive Replacement Cache)
+* Clock
 
 This is to accompany a blog post.
 
@@ -34,13 +35,11 @@ Pressing 'q' exists the dynamic view of the demo
 ```python
 from cache import memcache, CacheI
 
-KB = 1024
 # Types include:
 # CacheI.FIFO
 # CacheI.LRU (DEFAULT)
 # CacheI.CLOCK
-# Minimum size of 2 Kilobytes
-@memcache(2 * KB, CacheI.LRU)
+@memcache(50, CacheI.LRU)
 def fib(n):
     if n <= 1:
 

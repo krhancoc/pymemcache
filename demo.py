@@ -83,11 +83,11 @@ def cache_test(t):
 
 
 gcm = GlobalCacheManager
-#t = Thread(target = gcm.display, args = (True,))
-#t.start()
-#cache_test(CacheI.FIFO)
-#cache_test(CacheI.LRU)
+t = Thread(target = gcm.display, args = (True,))
+t.start()
+cache_test(CacheI.FIFO
+cache_test(CacheI.LRU)
 cache_test(CacheI.ARC)
-#cache_test(CacheI.CLOCK)
-#t.join()
+cache_test(CacheI.CLOCK)
+t.join()
 gcm.display()
