@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Author : Kenneth Ryan Hancock
+
 import time
 import curses
 
@@ -14,6 +17,7 @@ class CacheI(Enum):
 
 
 class CacheManager:
+    """ The GlobalCacheManager aggregates meta data on caches """
 
     def __init__(self):
         self._registered = []
@@ -57,6 +61,7 @@ GlobalCacheManager = CacheManager()
 
 
 class Cache(ABC):
+    """ Cache abstract class for base methods """
 
     def __init__(self, size, style):
         self._style = style

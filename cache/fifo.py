@@ -1,11 +1,21 @@
+# -*- coding: utf-8 -*-
+# Author : Kenneth Ryan Hancock
+
 import sys
 from collections import OrderedDict
 
 from .cache import Cache, CacheI
 
 class FIFO(Cache):
+    """ First in first out caching implementation """
 
     def __init__(self, size):
+        """
+        FIFO is a simple queue implementation
+
+        Args:
+            size (int) : max number of entries in the cache
+        """
         super().__init__(size, CacheI.FIFO)
         self._cache = OrderedDict()
         self._clock_head = 0

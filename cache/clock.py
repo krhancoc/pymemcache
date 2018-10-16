@@ -7,7 +7,15 @@ from .cache import Cache, CacheI
 
 
 class Clock(Cache):
+    """ Clock is an approximation of LRU
+    
+    Clock works by having a circlar style structure, and a second chance
+    mechanism.  The clock pointer points at some index in the cache, 
+    when an eviction is needed, it look at the head, checks the element there
+    if the bit set is 1, set it to 0 and move the next element, if its 0, then evict
+    that element
 
+    """
     def __init__(self, size):
         super().__init__(size, CacheI.CLOCK)
         self._cache = OrderedDict()
