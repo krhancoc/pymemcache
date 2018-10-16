@@ -16,24 +16,15 @@ class ARC(Cache):
         self._b1 = FIFO(int(size / 2))
         self._b2 = FIFO(int(size / 2))
         self._boundary = int(size / 2)
-        self._resizes = 0
 
-    @property
-    def misses(self):
-
-        return self._misses
-
-    @misses.setter
-    def misses(self, val):
-        
-        if self._t1._max_size > self._boundary:
-            self._t1._max_size -= 1
-            self._t2._max_size += 1
-        elif self._t1._max_size < self._boundary:
-            self._t1._max_size += 1
-            self._t2._max_size -= 1
-        
-        self._misses = val
+    def miss(self):
+        #  if self._t1._max_size > self._boundary:
+            #  self._t1._max_size -= 1
+            #  self._t2._max_size += 1
+        #  elif self._t1._max_size < self._boundary:
+            #  self._t1._max_size += 1
+            #  self._t2._max_size -= 1
+        self._misses += 1
 
     def fetch(self, key):
         val = self._t1.fetch(key)
@@ -51,6 +42,7 @@ class ARC(Cache):
             if (self._t2._max_size > 1):
                 self._t1._max_size += 1
                 self._t2._max_size -= 1
+            self._misses += 1
             return None
 
         val = self._t2.fetch(key)
@@ -63,9 +55,10 @@ class ARC(Cache):
             if (self._t1._max_size > 1):
                 self._t1._max_size -= 1
                 self._t2._max_size += 1
+            self._misses += 1
             return None
 
-        self.misses += 1
+        self._misses += 1
         return val
 
     def evict(self):
