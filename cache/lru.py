@@ -30,8 +30,6 @@ class LRU(Cache):
         """
         super().__init__(size, CacheI.LRU)
         self._cache = OrderedDict()
-        self._max_size = -1
-        self._resizes = 0
 
     # @profile
     def evict(self):
@@ -54,9 +52,6 @@ class LRU(Cache):
         if self._check_filled():
             self.evict()
         self._cache[key] = value
-        if (self.bsize() > self._size):
-            self.resize(key)
-            self.add(key, value)
 
     def fetch(self, key):
         result = super().fetch(key)
@@ -66,36 +61,17 @@ class LRU(Cache):
 
         return result
 
-    def resize(self, exclude):
-        self._resizes += 1
-        self._max_size = len(self._cache) - 2
-        new_cache = OrderedDict()
-        for k, val in self._cache.items():
-            if k != exclude:
-                new_cache[k] = val
-        self._cache = new_cache
-
     def bsize(self):
         """ Byte size of our cache object """
         sizeof = sys.getsizeof
         size = sizeof(self._hits)
-        size += sizeof(self._size)
+        size += sizeof(self._max_size)
         size += sizeof(self._hits)
         size += sizeof(self._style)
         size += sizeof(self._misses)
-        size += sizeof(self._resizes)
         size += sizeof(self._cache)
 
         return size
-
-    def info(self):
-        hit_p = 0
-        resize_p = 0
-        denom = (self._hits + self._misses)
-        if denom > 0:
-            hit_p = (self._hits / denom) * 100
-            resize_p = (self._resizes / self._misses) * 100
-        return [self._style, len(self), self.bsize(), hit_p, resize_p]
 
     def __str__(self):
         hit_p = 0
