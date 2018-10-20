@@ -10,6 +10,7 @@ Example of decorator with the following implementations:
 
 Demo output:
 
+```
 +----------------------------+--------------+---------+--------------+---------+
 |          Location          |  Cache Type  | Entries | Size (bytes) | Hit (%) |
 +============================+==============+=========+==============+=========+
@@ -69,6 +70,7 @@ Demo output:
 | decorators.py:local_with_s | CacheI.CLOCK |      30 |         4496 | 82.165  |
 | ome_random                 |              |         |              |         |
 +----------------------------+--------------+---------+--------------+---------+
+```
 
 This is to accompany a blog post.
 
